@@ -1,0 +1,147 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@Autonomous(name = "Auto Drive 1ft + Spin x3")
+public class AutoDriveSpin extends LinearOpMode {
+
+    // Drive motors
+    private DcMotor fl, fr, bl, br;
+
+    // Encoder constants
+    static final double TICKS_PER_REV = 537.7; // goBILDA motor
+    static final double WHEEL_DIAMETER_INCHES = 3.625;
+    static final double GEAR_RATIO = 1.0;
+
+    static final double TICKS_PER_INCH =
+            (TICKS_PER_REV * GEAR_RATIO) /
+            (Math.PI * WHEEL_DIAMETER_INCHES);
+
+    // Robot turning estimate
+    static final double ROBOT_DIAMETER_INCHES = 16.0;
+    static final double TURN_CIRCUMFERENCE =
+            Math.PI * ROBOT_DIAMETER_INCHES;
+
+    @Override
+    public void runOpMode() {
+
+        // Hardware map
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        br = hardwareMap.get(DcMotor.class, "br");
+
+        // Motor directions (same as your TeleOp)
+        fl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.REVERSE);
+        fr.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.FORWARD);
+
+        // Reset encoders
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addLine("Ready for start");
+        telemetry.update();
+
+        waitForStart();
+
+        // Step 1: drive forward 12 inches
+        driveForward(12, 0.5);
+
+        sleep(500);
+
+        // Step 2: spin 3 times
+        spinDegrees(1080, 0.6);
+
+        stopMotors();
+    }
+
+    // ---------- DRIVE FORWARD ----------
+    public void driveForward(double inches, double power) {
+
+        int moveTicks = (int)(inches * TICKS_PER_INCH);
+
+        fl.setTargetPosition(fl.getCurrentPosition() + moveTicks);
+        fr.setTargetPosition(fr.getCurrentPosition() + moveTicks);
+        bl.setTargetPosition(bl.getCurrentPosition() + moveTicks);
+        br.setTargetPosition(br.getCurrentPosition() + moveTicks);
+
+        setRunToPosition();
+
+        setPower(power);
+
+        while (opModeIsActive() &&
+                fl.isBusy() && fr.isBusy() &&
+                bl.isBusy() && br.isBusy()) {
+        }
+
+        stopMotors();
+        setRunUsingEncoder();
+    }
+
+    // ---------- SPIN ROBOT ----------
+    public void spinDegrees(double degrees, double power) {
+
+        double turnDistance =
+                (TURN_CIRCUMFERENCE * degrees) / 360.0;
+
+        int moveTicks = (int)(turnDistance * TICKS_PER_INCH);
+
+        fl.setTargetPosition(fl.getCurrentPosition() + moveTicks);
+        bl.setTargetPosition(bl.getCurrentPosition() + moveTicks);
+
+        fr.setTargetPosition(fr.getCurrentPosition() - moveTicks);
+        br.setTargetPosition(br.getCurrentPosition() - moveTicks);
+
+        setRunToPosition();
+
+        setPower(power);
+
+        while (opModeIsActive() &&
+                fl.isBusy() && fr.isBusy() &&
+                bl.isBusy() && br.isBusy()) {
+        }
+
+        stopMotors();
+        setRunUsingEncoder();
+    }
+
+    // ---------- Helpers ----------
+    private void setRunToPosition() {
+        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void setRunUsingEncoder() {
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void setPower(double power) {
+        fl.setPower(power);
+        fr.setPower(power);
+        bl.setPower(power);
+        br.setPower(power);
+    }
+
+    private void stopMotors() {
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+    }
+}
