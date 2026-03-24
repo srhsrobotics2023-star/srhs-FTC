@@ -1,0 +1,244 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+@TeleOp(name = "srhs2 Field Centric + Trigger Shooter")
+public class Shooter extends LinearOpMode {
+
+    // ---------------- DRIVE MOTORS ----------------
+    private DcMotor fl, bl, fr, br;
+
+    // ---------------- FLYWHEEL MOTORS ----------------
+    private DcMotorEx flyTop, flyBottom;
+
+    // ---------------- IMU ----------------
+    private IMU imu;
+
+    // ---------------- SLOW MODE ----------------
+    private boolean slowMode = false;
+    private boolean xPressedLast = false;
+    private static final double SLOW_MULTIPLIER = 0.4;
+
+    // ---------------- MOTOR CONSTANTS ----------------
+    private static final double TICKS_PER_REV = 537.7;
+
+    // 🔥 Max target RPM (tune later if needed)
+    private static final double MAX_RPM = 3000;
+
+    @Override
+    public void runOpMode() {
+
+        // -------- Hardware mapping --------
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        br = hardwareMap.get(DcMotor.class, "br");
+
+        flyTop = hardwareMap.get(DcMotorEx.class, "tr");
+        flyBottom = hardwareMap.get(DcMotorEx.class, "rr");
+
+        // -------- Motor directions --------
+        fl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.REVERSE);
+        fr.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.FORWARD);
+
+        // Flywheels opposite directions
+        flyTop.setDirection(DcMotor.Direction.FORWARD);
+        flyBottom.setDirection(DcMotor.Direction.REVERSE);
+
+        // -------- Brake mode --------
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // -------- Encoder mode --------
+        flyTop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flyBottom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        flyTop.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flyBottom.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // -------- IMU --------
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(
+                new IMU.Parameters(
+                        new RevHubOrientationOnRobot(
+                                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                        )
+                )
+        );
+
+        telemetry.addLine("READY – Press START");
+        telemetry.update();
+
+        waitForStart();
+        imu.resetYaw();
+
+        ElapsedTime runtime = new ElapsedTime();
+
+        // ================= MAIN LOOP =================
+        while (opModeIsActive()) {
+
+            // -------- Slow mode toggle --------
+            if (gamepad1.x && !xPressedLast) {
+                slowMode = !slowMode;
+            }
+            xPressedLast = gamepad1.x;
+
+            double speed = slowMode ? SLOW_MULTIPLIER : 1.0;
+
+            // -------- Drive input --------
+            double y  = -gamepad1.left_stick_y;
+            double x  =  gamepad1.left_stick_x;
+            double rx =  gamepad1.right_stick_x;
+
+            // -------- Field centric --------
+            double heading = imu.getRobotYawPitchRollAngles()
+                                .getYaw(AngleUnit.RADIANS);
+
+            double rotX = x * Math.cos(heading) - y * Math.sin(heading);
+            double rotY = x * Math.sin(heading) + y * Math.cos(heading);
+
+            rotX *= 1.1;
+
+            // -------- Mecanum math --------
+            double flPower = rotY + rotX + rx;
+            double blPower = rotY - rotX + rx;
+            double frPower = rotY - rotX - rx;
+            double brPower = rotY + rotX - rx;
+
+            double denom = Math.max(
+                    Math.max(Math.abs(flPower), Math.abs(blPower)),
+                    Math.max(Math.abs(frPower), Math.abs(brPower))
+            );
+            if (denom < 1) denom = 1;
+
+            fl.setPower((flPower / denom) * speed);
+            bl.setPower((blPower / denom) * speed);
+            fr.setPower((frPower / denom) * speed);
+            br.setPower((brPower / denom) * speed);
+
+            // =====================================================
+            // 🔥 TRIGGER-BASED FLYWHEEL CONTROL (YOUR REQUEST)
+            // RT = shoot forward
+            // LT = intake reverse
+            // =====================================================
+
+            double triggerInput =
+                    gamepad1.right_trigger - gamepad1.left_trigger;
+
+            double targetRPM = triggerInput * MAX_RPM;
+            double ticksPerSecond =
+                    (targetRPM / 60.0) * TICKS_PER_REV;
+
+            flyTop.setVelocity(ticksPerSecond);
+            flyBottom.setVelocity(ticksPerSecond);
+
+            // -------- Gyro reset --------
+            if (gamepad1.options) {
+                imu.resetYaw();
+            }
+
+            // -------- Telemetry --------
+            telemetry.addData("Runtime", runtime.toString());
+            telemetry.addData("Heading (deg)",
+                    imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("Slow Mode", slowMode ? "ON" : "OFF");
+            telemetry.addData("Trigger Input", triggerInput);
+            telemetry.addData("Target RPM", targetRPM);
+            telemetry.addData("Actual RPM",
+                    flyTop.getVelocity() * 60.0 / TICKS_PER_REV);
+            telemetry.update();
+        }
+    }
+}
