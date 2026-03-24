@@ -1,1 +1,123 @@
+package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "Robot Centric + Mechs")
+public class basic extends LinearOpMode {
+
+    // Drive motors
+    private DcMotor fl, bl, fr, br;
+
+    // Mechanism motors (Expansion Hub)
+    private DcMotor mechRight, mechLeft;
+
+    // -------- Input shaping --------
+    double shapeInput(double input) {
+        double deadband = 0.25;
+
+        double sign = Math.signum(input);
+        double abs = Math.abs(input);
+
+        if (abs < deadband) {
+            return input * 0.15; // very slow zone
+        } else {
+            double scaled = (abs - deadband) / (1 - deadband);
+            scaled = Math.pow(scaled, 2.2);
+            return sign * scaled;
+        }
+    }
+
+    @Override
+    public void runOpMode() {
+
+        // -------- Hardware Mapping --------
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        br = hardwareMap.get(DcMotor.class, "br");
+
+        mechRight = hardwareMap.get(DcMotor.class, "mechRight"); // Port 0
+        mechLeft  = hardwareMap.get(DcMotor.class, "mechLeft");  // Port 1
+
+        // -------- Motor Modes --------
+        mechRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mechLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Drive direction correction
+        fl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.REVERSE);
+
+        // Brake mode
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mechRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mechLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        telemetry.addData("Status", "Initialized (Robot Centric)");
+        telemetry.update();
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+            // -------- Gamepad Input --------
+            double y  = -gamepad1.left_stick_y;
+            double x  =  gamepad1.left_stick_x;
+            double rx =  gamepad1.right_stick_x;
+
+            // Deadzone
+            if (Math.abs(x) < 0.05) x = 0;
+            if (Math.abs(y) < 0.05) y = 0;
+            if (Math.abs(rx) < 0.05) rx = 0;
+
+            // Smooth input shaping
+            x = shapeInput(x);
+            y = shapeInput(y);
+            rx = shapeInput(rx);
+
+            // Reduce rotation speed
+            rx *= 0.6;
+
+            // -------- Robot-Centric Drive --------
+            double flPower = y + x + rx;
+            double blPower = y - x + rx;
+            double frPower = y - x - rx;
+            double brPower = y + x - rx;
+
+            double denom = Math.max(
+                Math.max(Math.abs(flPower), Math.abs(blPower)),
+                Math.max(Math.abs(frPower), Math.abs(brPower))
+            );
+            if (denom < 1) denom = 1;
+
+            // Motor scaling for straighter driving
+            double flScale = 1.00;
+            double blScale = 1.00;
+            double frScale = 0.95;
+            double brScale = 0.95;
+
+            fl.setPower((flPower / denom) * flScale);
+            bl.setPower((blPower / denom) * blScale);
+            fr.setPower((frPower / denom) * frScale);
+            br.setPower((brPower / denom) * brScale);
+
+            // -------- Mechanism Control --------
+            double mechInput = gamepad1.right_trigger - gamepad1.left_trigger;
+
+            double mechPower = shapeInput(mechInput);
+
+            mechRight.setPower(mechPower);
+            mechLeft.setPower(-mechPower);
+
+            // -------- Telemetry --------
+            telemetry.addData("Mech Power", mechPower);
+            telemetry.addData("Drive", "Robot Centric");
+            telemetry.update();
+        }
+    }
+}
