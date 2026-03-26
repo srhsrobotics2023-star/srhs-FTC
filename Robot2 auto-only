@@ -1,0 +1,65 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@Autonomous(name = "Auto Forward + TRUE Center Spin", group = "Auto")
+public class AutoSpin extends LinearOpMode {
+
+    private DcMotor fl, fr, bl, br;
+
+    @Override
+    public void runOpMode() {
+
+        // -------- Hardware --------
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        br = hardwareMap.get(DcMotor.class, "br");
+
+        // -------- Directions (same as your working TeleOp) --------
+        fl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.REVERSE);
+        fr.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.FORWARD);
+
+        // -------- Brake for cleaner stop --------
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        // =========================
+        // 1. DRIVE FORWARD (1 sec)
+        // =========================
+        setDrivePower(0.5, 0.5, 0.5, 0.5);
+        sleep(1000);
+        stopMotors();
+        sleep(300);
+
+        // =========================
+        // 2. TRUE CENTER SPIN (3 sec)
+        // =========================
+        // Left side forward, right side backward (EQUAL magnitude)
+        setDrivePower(0.6, -0.6, 0.6, -0.6);
+        sleep(3000);
+        stopMotors();
+    }
+
+    // -------- Helper --------
+    private void setDrivePower(double flP, double frP, double blP, double brP) {
+        fl.setPower(flP);
+        fr.setPower(frP);
+        bl.setPower(blP);
+        br.setPower(brP);
+    }
+
+    private void stopMotors() {
+        setDrivePower(0, 0, 0, 0);
+    }
+}
